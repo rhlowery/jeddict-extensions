@@ -19,6 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.GenericEntity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;<#if pagination != "no">
 import javax.ws.rs.QueryParam;
@@ -108,10 +109,11 @@ public class ${controllerClass} {
     @Produces(MediaType.APPLICATION_JSON)
     @Timeout
     <#if pagination == "no">
-    public List<${instanceType}> getAll${EntityClassPlural}() {
+    public Response getAll${EntityClassPlural}() {
         log.debug("REST request to get all ${EntityClassPlural}");
         List<${EntityClass}> ${entityInstancePlural} = ${entityRepository}.findAll();
-        return ${entityInstancePlural};
+        GenericEntity<List<${EntityClass}> genericEntity = new GenericEntity<List<${EntityClass}>>(${entityInstancePlural}) {};
+        return Response.status(Response.Status.OK).entity(genericEntity).build();
     }
     <#else>
     public Response getAll${EntityClassPlural}(@QueryParam("page") int page, @QueryParam("size") int size) throws URISyntaxException {
